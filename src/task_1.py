@@ -12,15 +12,15 @@ from queue import Queue
 
 
 # Функция для вычисления одного члена ряда
-def calculate_term(x, n):
+def calculate_term(x: float, n: int) -> float:
     return (x ** (2 * n + 1)) / math.factorial(2 * n + 1)
 
 
 # Функция для вычисления суммы ряда с заданной точностью
-def calculate_series(x, epsilon, queue):
-    n = 0
+def calculate_series(x: float, epsilon: float, queue: Queue[float]) -> None:
+    n: int = 0
     term = calculate_term(x, n)
-    total_sum = 0
+    total_sum: float = 0
     while abs(term) > epsilon:
         total_sum += term
         n += 1
@@ -29,18 +29,16 @@ def calculate_series(x, epsilon, queue):
     queue.task_done()
 
 
-def main():
-    queue = Queue()
+def main() -> None:
+    queue: Queue[float] = Queue()
 
     # Значения x, epsilon, и расчет y
-    x = 2
-    epsilon = 1e-7
-    y = (math.exp(x) - math.exp(-x)) / 2  # Контрольное значение
+    x: float = 2.0
+    epsilon: float = 1e-7
+    y: float = (math.exp(x) - math.exp(-x)) / 2  # Контрольное значение
 
     # Создаем и запускаем поток
-    thread = threading.Thread(
-        target=calculate_series, args=(x, epsilon, queue)
-    )
+    thread = threading.Thread(target=calculate_series, args=(x, epsilon, queue))
     thread.start()
 
     # Ожидаем завершения потоков
@@ -48,7 +46,7 @@ def main():
     queue.join()
 
     # Получаем результат
-    s = queue.get()
+    s: float = queue.get()
 
     # Вывод результатов
     print(f"Рассчитанная сумма ряда S: {s}")
